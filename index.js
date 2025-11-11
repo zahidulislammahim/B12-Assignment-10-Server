@@ -36,16 +36,15 @@ async function run() {
     //get issue by id
     app.get("/issues/:id", async (req, res) => {
       const { id } = req.params;
-      const result = await issuesCollection.findOne({_id: new ObjectId(id)})
-      res.send(result)
+      const result = await issuesCollection.findOne({ _id: new ObjectId(id) });
+      res.send(result);
     });
 
-     //get all Contribution
+    //get all Contribution
     app.get("/contribution", async (req, res) => {
       const result = await contributionCollection.find().toArray();
       res.send(result);
     });
-
 
     //post an issue
     app.post("/issues", async (req, res) => {
@@ -61,17 +60,27 @@ async function run() {
     });
 
     //Update MY Issues
-    app.put("/issues/:id", async(req, res) =>{
-      const {id} = req.params;
+    app.put("/issues/:id", async (req, res) => {
+      const { id } = req.params;
       const data = req.body;
       console.log(data);
-      
+
       const update = {
         $set: data,
-      }
-      const result = await issuesCollection.updateOne({_id: new ObjectId(id)}, update)
-      res.send(result)
-    })
+      };
+      const result = await issuesCollection.updateOne(
+        { _id: new ObjectId(id) },
+        update
+      );
+      res.send(result);
+    });
+
+    //Delete My Issues
+    app.delete("/issues/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await issuesCollection.deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
