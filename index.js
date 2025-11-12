@@ -33,6 +33,18 @@ async function run() {
       res.send(result);
     });
 
+    //get My added issues
+    app.get("/my-issues", async (req, res) => {
+       const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.email = email;
+      }
+      const cursor = issuesCollection.find(query);
+      const result = await cursor.toArray()
+      res.send(result);
+    });
+
     //get issue by id
     app.get("/issues/:id", async (req, res) => {
       const { id } = req.params;
@@ -40,9 +52,24 @@ async function run() {
       res.send(result);
     });
 
-    //get all Contribution
+    //get My Contribution
     app.get("/contribution", async (req, res) => {
-      const result = await contributionCollection.find().toArray();
+      const email = req.query.email;
+      const query = {};
+      if (email) {
+        query.email = email;
+      }
+      const cursor = contributionCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    //get Contribution by issues
+    app.get("/contribution/:issueId", async (req, res) => {
+      const issueId = req.params.issueId;
+      const query = { issueId: issueId };
+      const cursor = contributionCollection.find(query).sort({ amount: -1 });
+      const result = await cursor.toArray();
       res.send(result);
     });
 
@@ -77,7 +104,9 @@ async function run() {
     //Delete My Issues
     app.delete("/issues/:id", async (req, res) => {
       const { id } = req.params;
-      const result = await issuesCollection.deleteOne({ _id: new ObjectId(id) });
+      const result = await issuesCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
       res.send(result);
     });
 
