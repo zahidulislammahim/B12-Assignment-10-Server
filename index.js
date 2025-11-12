@@ -63,7 +63,6 @@ async function run() {
     app.put("/issues/:id", async (req, res) => {
       const { id } = req.params;
       const data = req.body;
-      console.log(data);
 
       const update = {
         $set: data,
